@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title>Learn Game Development at ZENVA.com</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<link href="https://fonts.googleapis.com/css?family=Chela+One|Montserrat" rel="stylesheet">
+
+	<link rel="stylesheet" type="text/css" href="styles/main.css">
+
+	<script type="text/javascript" src="js/RulesEditor.js"></script>
+
+	<script type="text/javascript" src="js/libs/phaser.js"></script>
+	<script type="text/javascript" src="js/RulesEngine.js"></script>
+	<script type="text/javascript" src="js/Boot.js"></script>
+	<script type="text/javascript" src="js/Preload.js"></script>
+	<script type="text/javascript" src="js/Animations.js"></script>
+	<script type="text/javascript" src="js/Game.js"></script>
+
+	<style>
+		body {
+			padding: 0px;
+			margin: 0px;
+		}
+	</style>
+</head>
+
+<body onload="javascript:RulesEditor.init();">
+	<!-- include the main game file -->
+	<script src="js/main.js"></script>
+
+	<div style="position:absolute;height:100%;width:300px;margin-left: 3px;background:white;">
+
+		<div>Welcome!</div>
+
+		<select id="existing_rules" class="code" size="10">
+
+		</select>
+
+		<button onclick="javascript:alert('hi')">Add Rule</button>
+
+		<div id="rule" class="code">
+
+
+				When
+				<div>
+					<select id="actor">
+					</select>
+				</div>
+				<div>
+					<select id="situation">
+						<option></option>
+					</select>
+				</div>
+			
+
+			then
+			<select id="actor"></select>
+			should
+			<select id="action"></select>
+
+		</div>
+
+	</div>
+
+</body>
+
+</html>

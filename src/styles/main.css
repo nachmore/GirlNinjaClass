@@ -1,0 +1,12 @@
+* {
+  font-family: 'Chela One', cursive;
+}
+
+.code, .code * {
+  font-family: 'Montserrat', 'Consolas', sans-serif;
+}
+
+#rule select {
+  margin: 5px 0px 5px 20px;
+  width: 250px;
+}
