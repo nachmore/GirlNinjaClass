@@ -114,6 +114,7 @@ InfiniteScroller.Game.prototype = {
   },
   
   update: function() {
+
     //collision
     this.game.physics.arcade.collide(this.player, this.ground, this.playerHit, null, this);
     this.game.physics.arcade.collide(this.player, this.fleas, this.playerBit, null, this);
@@ -146,21 +147,40 @@ InfiniteScroller.Game.prototype = {
       else if(this.player.x >= this.game.width) {
         this.wrapping = false;
       }
+
+      this.handleCursorKeys();
       
-      //take the appropriate action for swiping up or pressing up arrow on keyboard
-      //we don't wait until the swipe is finished (this.swipe.isUp),
-      //  because of latency problems (it takes too long to jump before hitting a flea)
-      if (this.swipe.isDown && (this.swipe.positionDown.y > this.swipe.position.y)) {
-        this.playerJump();
-      }
-      else if (this.cursors.up.isDown) {
-        this.playerJump();
-      }
-    
       //The game world is infinite in the x-direction, so we wrap around.
       //We subtract padding so the player will remain in the middle of the screen when
       //wrapping, rather than going to the end of the screen first.
       this.game.world.wrap(this.player, -(this.game.width/2), false, true, false);
+    }
+
+  },
+  handleCursorKeys: function() {
+          
+    if (this.cursors.up.isDown) {
+      if (RulesEngine.player.triggers.up == RulesEngine.player.actions.Jump) {
+        this.playerJump();
+      }
+    }
+
+    if (this.cursors.down.isDown) {
+      if (RulesEngine.player.triggers.down == RulesEngine.player.actions.Jump) {
+        this.playerJump();
+      }
+    }
+
+    if (this.cursors.left.isDown) {
+      if (RulesEngine.player.triggers.left == RulesEngine.player.actions.Jump) {
+        this.playerJump();
+      }
+    }
+
+    if (this.cursors.right.isDown) {
+      if (RulesEngine.player.triggers.right == RulesEngine.player.actions.Jump) {
+        this.playerJump();
+      }
     }
 
   },
@@ -238,7 +258,9 @@ InfiniteScroller.Game.prototype = {
     //when the ground is a sprite, we need to test for "touching" instead of "blocked"
     if (this.player.body.touching.down) {
       this.player.body.velocity.y -= 600;
-      Animations.ninjaJump();
+
+      if (RulesEngine.player.animations.jump)
+        Animations.ninjaJump();
 
       this.isJumping = true;
     }    

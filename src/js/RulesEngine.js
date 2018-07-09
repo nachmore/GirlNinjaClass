@@ -24,8 +24,11 @@ if (RulesEngine === null) {
       }
 
       this.whenMeetZombieAction = null;
-      this.whenJumpAction = null;
       this.whenAttackAction = null;
+
+      this.animations = {
+        jump: false,
+      };
     }
   };
 

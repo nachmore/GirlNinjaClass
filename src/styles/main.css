@@ -1,12 +1,40 @@
-* {
+{
   font-family: 'Chela One', cursive;
 }
 
-.code, .code * {
+.code, .code *, .variable, .rule {
   font-family: 'Montserrat', 'Consolas', sans-serif;
 }
 
 #rule select {
   margin: 5px 0px 5px 20px;
   width: 250px;
+}
+
+.rule {
+  font-size: 0.8em;
+  border: solid 1px darkslategrey;
+  margin: 2px 2px 6px 2px;
+  padding: 3px;
+}
+
+.variable {
+  font-weight: bold;
+  border: solid 1px black;
+  background-color: whitesmoke;
+  border: 1px solid lightgrey;
+}
+
+.rule_action {
+  padding-left: 10px;
+  padding-top: 3px;
+}
+
+.rule_button {
+  float: left;
+  vertical-align: middle;
+  margin: 2px 5px 2px 2px;
+  color: red;
+  font-size: 1.2em;
+  padding: 1px;
 }

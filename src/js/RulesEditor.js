@@ -1,4 +1,4 @@
-var RulesEditor = RulesEditor || function() {};
+var RulesEditor = RulesEditor || function () { };
 
 RulesEditor.prototype = {
 
@@ -13,31 +13,35 @@ RulesEditor.prototype = {
 
   validTriggers: {},
 
-  get curActor()     {return this.elems.selectActor[this.elems.selectActor.selectedIndex].text;},
-  get curSituation() {return this.elems.selectSituation[this.elems.selectSituation.selectedIndex].text;},
-  get curTarget()    {return this.elems.selectTarget[this.elems.selectTarget.selectedIndex].text;},
-  get curAction()    {return this.elems.selectAction[this.elems.selectAction.selectedIndex].text; },
+  get curActor() { return this.elems.selectActor[this.elems.selectActor.selectedIndex].text; },
+  get curSituation() { return this.elems.selectSituation[this.elems.selectSituation.selectedIndex].text; },
+  get curTarget() { return this.elems.selectTarget[this.elems.selectTarget.selectedIndex].text; },
+  get curAction() { return this.elems.selectAction[this.elems.selectAction.selectedIndex].text; },
 
-  init: function() {
+  init: function () {
 
     this.initValidTriggers();
 
-    this.elems.selectActor     = document.getElementById("actor");
-    this.elems.selectSituation = document.getElementById("situation");
-    this.elems.selectTarget    = document.getElementById("target");
-    this.elems.selectAction     = document.getElementById("action");
+    this.rules = [];
 
-    this.elems.selectActor.onchange     = function() {RulesEditor.updateSituations();};
-    this.elems.selectSituation.onchange = function() {RulesEditor.updateTargets();};
-    this.elems.selectTarget.onchange    = function() {RulesEditor.updateActions();}
+    this.elems.selectActor = document.getElementById("actor");
+    this.elems.selectSituation = document.getElementById("situation");
+    this.elems.selectTarget = document.getElementById("target");
+    this.elems.selectAction = document.getElementById("action");
+
+    this.elems.divRules = document.getElementById("existing_rules");
+
+    this.elems.selectActor.onchange = function () { RulesEditor.updateSituations(); };
+    this.elems.selectSituation.onchange = function () { RulesEditor.updateTargets(); };
+    this.elems.selectTarget.onchange = function () { RulesEditor.updateActions(); }
 
     // this will set off an onchange() cascade
     this.initSelect(this.elems.selectActor, this.validTriggers);
   },
 
   // init once the object is constructed so that we have access to internal properties such as playerActions
-  initValidTriggers: function() {
-    
+  initValidTriggers: function () {
+
     this.validTriggers = {
       Game: {
         Load: 0,
@@ -47,18 +51,69 @@ RulesEditor.prototype = {
         "Presses Up": {
           Player: {
             Jump: {
-              apply: function() {},
-              undo: function() {}
+              apply: function () {
+                RulesEngine.player.triggers.up = RulesEngine.player.actions.Jump;
+              },
+              undo: function () {
+                RulesEngine.player.triggers.up = null;
+              }
             },
             Attack: null,
           },
         },
-        "Presses Down": RulesEditor.playerActions,
-        "Presses Left": RulesEditor.playerActions,
-        "Presses Right": RulesEditor.playerActions
+        "Presses Down": {
+          Player: {
+            Jump: {
+              apply: function () {
+                RulesEngine.player.triggers.down = RulesEngine.player.actions.Jump;
+              },
+              undo: function () {
+                RulesEngine.player.triggers.down = null;
+              }
+            },
+            Attack: null,
+          },
+        },
+        "Presses Left": {
+          Player: {
+            Jump: {
+              apply: function () {
+                RulesEngine.player.triggers.left = RulesEngine.player.actions.Jump;
+              },
+              undo: function () {
+                RulesEngine.player.triggers.left = null;
+              }
+            },
+            Attack: null,
+          },
+        },
+        "Presses Right": {
+          Player: {
+            Jump: {
+              apply: function () {
+                RulesEngine.player.triggers.right = RulesEngine.player.actions.Jump;
+              },
+              undo: function () {
+                RulesEngine.player.triggers.right = null;
+              }
+            },
+            Attack: null,
+          },
+        },
       },
       "Ninja": {
-        Jumps: 0,
+        Jumps: {
+          Animations: {
+            "Play Jump Animation": {
+              apply: function() {
+                RulesEngine.player.animations.jump = true;
+              },
+              undo: function() {
+                RulesEngine.player.animations.jump = false;
+              }
+            }
+          },
+        },
         Attacks: 0,
         "Gets Hit By Zombie": 0,
         "Hits an Object": 0,
@@ -70,30 +125,60 @@ RulesEditor.prototype = {
     };
   },
 
-  updateSituations: function() {
+  updateSituations: function () {
     this.initSelect(this.elems.selectSituation, this.validTriggers[this.curActor]);
   },
 
-  updateTargets: function() {
+  updateTargets: function () {
     this.initSelect(this.elems.selectTarget, this.validTriggers[this.curActor][this.curSituation]);
   },
 
-  updateActions: function() {
+  updateActions: function () {
     this.initSelect(this.elems.selectAction, this.validTriggers[this.curActor][this.curSituation][this.curTarget]);
   },
 
-  initSelect: function(select, options) {
+  initSelect: function (select, options) {
     select.innerHTML = "";
 
     for (var option in options) {
-      var elem = document.createElement("option");
-      elem.text = option;
-
-      select.add(elem);
+      this.addOption(select, option);
     }
 
     if (typeof select.onchange == "function")
-      select.onchange.apply(select);    
+      select.onchange.apply(select);
+  },
+
+  addOption: function(select, text) {
+    var elem = document.createElement("option");
+    elem.text = text;
+
+    select.add(elem);
+  },
+  deleteRule: function(index) {
+    var rule = this.rules.splice(index, 1)[0];
+
+    rule.undo();
+    
+    var divRule = document.getElementById("rule" + index);
+    this.elems.divRules.removeChild(divRule);
+  },
+  addRule: function () {
+
+    var index = this.rules.push(this.validTriggers[this.curActor][this.curSituation][this.curTarget][this.curAction]) - 1;
+
+    this.rules[index].apply();
+
+    var text = '<div id="rule' + index + '" class="rule">' + 
+                '<button class="rule_button" onclick="javascript:RulesEditor.deleteRule(' + index + ')">🗑</button>' +
+                'When <span class="variable">'+ this.curActor + '</span></b> ' + 
+                '<span class="variable">' + this.curSituation + '</span>' + 
+                 '<div class="rule_action">' + 
+                   'Then <span class="variable">' + this.curTarget + '</span> ' + 
+                   'should <span class="variable">' + this.curAction + '</span>' + 
+                 '</div>' +
+               '</div>';
+
+    this.elems.divRules.innerHTML += text;
   }
 }
 
