@@ -51,7 +51,7 @@ RulesEditor.prototype = {
                 RulesEngine.game.background = "background_graveyard";
               },
               undo: function() {
-                RulesEngine.game.background = null;
+                RulesEngine.game.background = "non_existant";
               }
             },
             "Draw Pink Moon": {
@@ -59,7 +59,7 @@ RulesEditor.prototype = {
                 RulesEngine.game.background = "background_graveyard_magenta";
               },
               undo: function() {
-                RulesEngine.game.background = null;
+                RulesEngine.game.background = "non_existant";
               }            
             },
             "Draw Party": {
@@ -67,7 +67,7 @@ RulesEditor.prototype = {
                 RulesEngine.game.background = "background_party";
               },
               undo: function() {
-                RulesEngine.game.background = null;
+                RulesEngine.game.background = "non_existant";
               }            
             },
             "Draw Red": {
@@ -75,7 +75,7 @@ RulesEditor.prototype = {
                 RulesEngine.game.background = "background_red";
               },
               undo: function() {
-                RulesEngine.game.background = null;
+                RulesEngine.game.background = "non_existant";
               }            
 
             },
@@ -84,7 +84,7 @@ RulesEditor.prototype = {
                 RulesEngine.game.background = "background_placeholder";
               },
               undo: function() {
-                RulesEngine.game.background = null;
+                RulesEngine.game.background = "non_existant";
               }            
             }
           }
@@ -199,7 +199,8 @@ RulesEditor.prototype = {
     select.add(elem);
   },
   deleteRule: function(index) {
-    var rule = this.rules.splice(index, 1)[0];
+    var rule = this.rules[index];
+    this.rules[index] = null;
 
     rule.undo();
     
@@ -223,6 +224,12 @@ RulesEditor.prototype = {
                '</div>';
 
     this.elems.divRules.innerHTML += text;
+  },
+  runAllRules: function() {
+    for (var rule in rules) {
+      if (rule != null)
+        rule.apply();
+    }
   }
 }
 
