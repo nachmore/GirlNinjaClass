@@ -81,6 +81,7 @@ InfiniteScroller.Game.prototype = {
     
     //set some variables we need throughout the game
     this.isJumping = false;
+    this.isAttacking = false;
 
     this.scratches = 0;
     this.wraps = 0;
@@ -165,10 +166,15 @@ InfiniteScroller.Game.prototype = {
     }
   },
   handleCursorKeys: function() {
-          
+
+    // note that only one trigger per-cursor is supported. Multiple rules will
+    // be stomped in favour of the highest number rule (i.e. Last-In)
+    
     if (this.cursors.up.isDown) {
       if (RulesEngine.player.triggers.up == RulesEngine.player.actions.Jump) {
         this.playerJump();
+      } else if (RulesEngine.player.triggers.up == RulesEngine.player.actions.Attack) {
+        this.playerAttack();
       }
     }
 
@@ -272,6 +278,19 @@ InfiniteScroller.Game.prototype = {
       this.isJumping = true;
     }    
   },
+  playerAttack: function() {
+    if (this.isAttacking != true) {
+      Animations.ninjaAttack();
+      this.isAttacking = true;
+      // not the greatest since something else could happen in the meanwhile
+      this.game.time.events.add(500, this.playerStopAttack, this);
+    }
+  },
+  playerStopAttack: function() {
+    Animations.ninjaRun();
+
+    this.isAttacking = false;
+  },
   playerDig: function() {
     //play audio
     this.barkSound.play();
@@ -296,7 +315,7 @@ InfiniteScroller.Game.prototype = {
     //and make it disappear again after one second
     this.game.time.events.add(Phaser.Timer.SECOND, this.currentToyInvisible, this);
     
-    Animations.run(this.player);
+    //Animations.run(this.player);
     this.stopped = false;
   },
   currentToyInvisible: function() {

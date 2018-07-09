@@ -102,7 +102,14 @@ RulesEditor.prototype = {
                 RulesEngine.player.triggers.up = null;
               }
             },
-            Attack: null,
+            Attack: {
+              apply: function () {
+                RulesEngine.player.triggers.up = RulesEngine.player.actions.Attack;
+              },
+              undo: function () {
+                RulesEngine.player.triggers.up = null;
+              }
+            },
           },
         },
         "Presses Down": {
@@ -198,7 +205,7 @@ RulesEditor.prototype = {
 
     select.add(elem);
   },
-  deleteRule: function(index) {
+  deleteRule: function(index, rerun = true) {
     var rule = this.rules[index];
     this.rules[index] = null;
 
@@ -206,6 +213,9 @@ RulesEditor.prototype = {
     
     var divRule = document.getElementById("rule" + index);
     this.elems.divRules.removeChild(divRule);
+
+    if (rerun)
+      this.runAllRules();
   },
   addRule: function () {
 
