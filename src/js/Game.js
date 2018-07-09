@@ -99,13 +99,15 @@ InfiniteScroller.Game.prototype = {
     this.toys = [bone, ball];
     this.currentToy = bone;
     
-    //stats
+    // HUD
     var style1 = { font: "20px Raleway", fill: "#ff0"};
-    var t1 = this.game.add.text(200, 20, "Points:", style1);
-    var t2 = this.game.add.text(this.game.width-120, 20, "Health:", style1);
-    t1.fixedToCamera = true;
-    t2.fixedToCamera = true;
-
+    this.pointsHUD = this.game.add.text(200, 20, "Points:", style1);
+    this.healthHUD = this.game.add.text(this.game.width-120, 20, "Health:", style1);
+    
+    this.pointsHUD.fixedToCamera = true;
+    this.healthHUD.fixedToCamera = true;
+    
+    // actual values display
     var style2 = { font: "26px Raleway", fill: "#00ff00"};
     this.pointsText = this.game.add.text(270, 13, "", style2);
     this.healthText = this.game.add.text(this.game.width-50, 13, "", style2);
@@ -202,8 +204,23 @@ InfiniteScroller.Game.prototype = {
   },
   //show updated stats values
   refreshStats: function() {
-    this.pointsText.text = this.points;
-    this.healthText.text = RulesEngine.player.maxHealth - this.hits;
+    if (RulesEngine.game.drawPoints) {
+      this.pointsText.text = this.points;
+      this.pointsText.visible = true;
+      this.pointsHUD.visible = true;
+    } else {
+      this.pointsText.visible = false;
+      this.pointsHUD.visible = false;
+    }
+
+    if (RulesEngine.game.drawHealth) {
+      this.healthText.text = RulesEngine.player.maxHealth - this.hits;
+      this.healthText.visible = true;
+      this.healthHUD.visible = true;
+    } else {
+      this.healthText.visible = false;
+      this.healthHUD.visible = false;
+    }
   },
   playerHit: function(player, blockedLayer) {
     if(player.body.touching.right) {
@@ -222,7 +239,7 @@ InfiniteScroller.Game.prototype = {
     Animations.ninjaAttack();
 
     // register a hit
-    this.hits++;
+    this.hits += RulesEngine.player.healthLostPerHit;
     
     //change sprite image
     //this.player.loadTexture('playerScratch');
@@ -282,9 +299,12 @@ InfiniteScroller.Game.prototype = {
   },
   playerAttack: function() {
     if (this.isAttacking != true) {
-      Animations.ninjaAttack();
+      if (RulesEngine.player.animations.attack)
+        Animations.ninjaAttack();
       this.isAttacking = true;
+
       // not the greatest since something else could happen in the meanwhile
+      // note: 500ms
       this.game.time.events.add(500, this.playerStopAttack, this);
     }
   },

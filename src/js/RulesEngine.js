@@ -5,6 +5,8 @@ if (RulesEngine === null) {
 	RulesEngine = function() {
     this.game = {
       background: null,
+      drawHealth: false,
+      drawPoints: false,
     };
 
     this.zombie = new function() {
@@ -15,6 +17,7 @@ if (RulesEngine === null) {
     this.player = new function() {
 
       this.maxHealth = 1;
+      this.healthLostPerHit = 0;
 
       this.actions = Object.freeze({
         Run: 1,
@@ -34,6 +37,7 @@ if (RulesEngine === null) {
 
       this.animations = {
         jump: false,
+        attack: false,
       };
     }
   };

@@ -132,6 +132,24 @@ RulesEditor.prototype = {
                 RulesEngine.player.maxHealth = 5;
               }
             },
+          },
+          UI: {
+            'Should Draw Health': {
+              apply: function() {
+                RulesEngine.game.drawHealth = true;
+              },
+              undo: function() {
+                RulesEngine.game.drawHealth = false;
+              }
+            },
+            'Should Draw Points': {
+              apply: function() {
+                RulesEngine.game.drawPoints = true;
+              },
+              undo: function() {
+                RulesEngine.game.drawPoints = false;
+              }
+            }
           }
         },
         Bloat: 0,
@@ -210,8 +228,62 @@ RulesEditor.prototype = {
             }
           },
         },
-        Attacks: 0,
-        "Gets Hit By Zombie": 0,
+        Attacks: {
+          Animations: {
+            "Play Attack Animation": {
+              apply: function() {
+                RulesEngine.player.animations.attack = true;
+              },
+              undo: function() {
+                RulesEngine.player.animations.attack = false;
+              }
+            }
+          }
+        },
+        "Gets Hit By Zombie": {
+          Health: {
+            "Drop by 1": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 1;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+            "Drop by 2": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 2;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+            "Drop by 3": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 3;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+            "Drop by 4": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 4;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+            "Drop by 5": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 5;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+          }
+        },
         "Hits an Object": 0,
       },
       "Zombie": {
