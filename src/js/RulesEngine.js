@@ -14,6 +14,8 @@ if (RulesEngine === null) {
 
     this.player = new function() {
 
+      this.maxHealth = 1;
+
       this.actions = Object.freeze({
         Run: 1,
         Jump: 2,

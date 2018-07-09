@@ -83,12 +83,13 @@ InfiniteScroller.Game.prototype = {
     this.isJumping = false;
     this.isAttacking = false;
 
-    this.scratches = 0;
+    // number of times the player has been hit
+    this.hits = 0;
+
     this.wraps = 0;
     this.points = 0;
     this.wrapping = true;
     this.stopped = false;
-    this.maxScratches = 5;
     
     //create an array of possible toys that can be gathered from toy mounds
     var bone = this.game.add.sprite(0, this.game.height-130, 'bone');
@@ -99,18 +100,18 @@ InfiniteScroller.Game.prototype = {
     this.currentToy = bone;
     
     //stats
-    var style1 = { font: "20px Arial", fill: "#ff0"};
-    var t1 = this.game.add.text(10, 20, "Points:", style1);
-    var t2 = this.game.add.text(this.game.width-300, 20, "Remaining Flea Scratches:", style1);
+    var style1 = { font: "20px Raleway", fill: "#ff0"};
+    var t1 = this.game.add.text(200, 20, "Points:", style1);
+    var t2 = this.game.add.text(this.game.width-120, 20, "Health:", style1);
     t1.fixedToCamera = true;
     t2.fixedToCamera = true;
 
-    var style2 = { font: "26px Arial", fill: "#00ff00"};
-    this.pointsText = this.game.add.text(80, 18, "", style2);
-    this.fleasText = this.game.add.text(this.game.width-50, 18, "", style2);
-    this.refreshStats();
+    var style2 = { font: "26px Raleway", fill: "#00ff00"};
+    this.pointsText = this.game.add.text(270, 13, "", style2);
+    this.healthText = this.game.add.text(this.game.width-50, 13, "", style2);
+    
     this.pointsText.fixedToCamera = true;
-    this.fleasText.fixedToCamera = true;
+    this.healthText.fixedToCamera = true;
     
   },
   
@@ -121,6 +122,8 @@ InfiniteScroller.Game.prototype = {
     this.game.physics.arcade.collide(this.player, this.fleas, this.playerBit, null, this);
     this.game.physics.arcade.overlap(this.player, this.mounds, this.collect, this.checkDig, this);
     
+    this.refreshStats();
+
     //only respond to keys and keep the speed if the player is alive
     //we also don't want to do anything if the player is stopped for scratching or digging
     if(this.player.alive && !this.stopped) {
@@ -200,7 +203,7 @@ InfiniteScroller.Game.prototype = {
   //show updated stats values
   refreshStats: function() {
     this.pointsText.text = this.points;
-    this.fleasText.text = this.maxScratches - this.scratches;
+    this.healthText.text = RulesEngine.player.maxHealth - this.hits;
   },
   playerHit: function(player, blockedLayer) {
     if(player.body.touching.right) {
@@ -218,9 +221,8 @@ InfiniteScroller.Game.prototype = {
     
     Animations.ninjaAttack();
 
-    //update our stats
-    this.scratches++;
-    this.refreshStats();
+    // register a hit
+    this.hits++;
     
     //change sprite image
     //this.player.loadTexture('playerScratch');
@@ -324,7 +326,7 @@ InfiniteScroller.Game.prototype = {
   playerScratch: function() {
     this.stopped = false;
     
-    if (this.scratches >= 5) {
+    if (this.hits >= RulesEngine.player.maxHealth) {
       //set to dead (even though our player isn't actually dead in this game, just running home)
       //doesn't affect rendering
       this.player.alive = false;

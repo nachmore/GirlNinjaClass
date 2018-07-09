@@ -40,6 +40,9 @@ RulesEditor.prototype = {
   },
 
   // init once the object is constructed so that we have access to internal properties such as playerActions
+
+  // TODO: This needs to be in its own set of files
+  // TODO: Need to create a DefaultRules structure to reset to defaults on undo
   initValidTriggers: function () {
 
     this.validTriggers = {
@@ -87,6 +90,48 @@ RulesEditor.prototype = {
                 RulesEngine.game.background = "non_existant";
               }            
             }
+          },
+          "Player Health": {
+            "Be 1": {
+              apply: function() {
+                RulesEngine.player.maxHealth = 1;
+              },
+              undo: function() {
+                RulesEngine.player.maxHealth = 1;
+              }
+            },
+            "Be 2": {
+              apply: function() {
+                RulesEngine.player.maxHealth = 2;
+              },
+              undo: function() {
+                RulesEngine.player.maxHealth = 2;
+              }
+            },
+            "Be 3": {
+              apply: function() {
+                RulesEngine.player.maxHealth = 3;
+              },
+              undo: function() {
+                RulesEngine.player.maxHealth = 3;
+              }
+            },
+            "Be 4": {
+              apply: function() {
+                RulesEngine.player.maxHealth = 4;
+              },
+              undo: function() {
+                RulesEngine.player.maxHealth = 4;
+              }
+            },
+            "Be 5": {
+              apply: function() {
+                RulesEngine.player.maxHealth = 5;
+              },
+              undo: function() {
+                RulesEngine.player.maxHealth = 5;
+              }
+            },
           }
         },
         Bloat: 0,
