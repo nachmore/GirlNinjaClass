@@ -226,9 +226,9 @@ RulesEditor.prototype = {
     this.elems.divRules.innerHTML += text;
   },
   runAllRules: function() {
-    for (var rule in rules) {
-      if (rule != null)
-        rule.apply();
+    for (var index = 0; index < this.rules.length; index++) {
+      if (this.rules[index] != null)
+        this.rules[index].apply();
     }
   }
 }
