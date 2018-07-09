@@ -29,16 +29,8 @@ InfiniteScroller.Game.prototype = {
     this.player.animations.add('jump');
     this.player.animations.add('attack');
 
-    //create the fleas
-    this.generateFleas();
-    //and the toy mounds
-    this.generateMounds();
+    this.generateZombies();
     
-    //put everything in the correct order (the grass will be camoflauge),
-    //but the toy mounds have to be above that to be seen, but behind the
-    //ground so they barely stick up
-    //this.game.world.bringToTop(this.grass);
-    this.game.world.bringToTop(this.mounds);
     this.game.world.bringToTop(this.ground);
 
     //enable physics on the player and ground
@@ -90,15 +82,7 @@ InfiniteScroller.Game.prototype = {
     this.points = 0;
     this.wrapping = true;
     this.stopped = false;
-    
-    //create an array of possible toys that can be gathered from toy mounds
-    var bone = this.game.add.sprite(0, this.game.height-130, 'bone');
-    var ball = this.game.add.sprite(0, this.game.height-130, 'ball');
-    bone.visible = false;
-    ball.visible = false;
-    this.toys = [bone, ball];
-    this.currentToy = bone;
-    
+        
     // HUD
     var style1 = { font: "20px Raleway", fill: "#ff0"};
     this.pointsHUD = this.game.add.text(200, 20, "Points:", style1);
@@ -120,9 +104,8 @@ InfiniteScroller.Game.prototype = {
   update: function() {
 
     //collision
-    this.game.physics.arcade.collide(this.player, this.ground, this.playerHit, null, this);
-    this.game.physics.arcade.collide(this.player, this.fleas, this.playerBit, null, this);
-    this.game.physics.arcade.overlap(this.player, this.mounds, this.collect, this.checkDig, this);
+    this.game.physics.arcade.collide(this.player, this.ground, this.playerOnGround, null, this);
+    this.game.physics.arcade.collide(this.player, this.zombies, this.playerHitZombie, null, this);
     
     this.refreshStats();
 
@@ -140,14 +123,10 @@ InfiniteScroller.Game.prototype = {
         
         //We only want to destroy and regenerate once per wrap, so we test with wrapping var
         this.wrapping = true;
-        this.fleas.destroy();
-        this.generateFleas();
-        this.mounds.destroy();
-        this.generateMounds();
+        this.zombies.destroy();
+        this.generateZombies();
         
         //put everything back in the proper order
-        //this.game.world.bringToTop(this.grass);
-        this.game.world.bringToTop(this.mounds);
         this.game.world.bringToTop(this.ground);
       }
       else if(this.player.x >= this.game.width) {
@@ -222,7 +201,7 @@ InfiniteScroller.Game.prototype = {
       this.healthHUD.visible = false;
     }
   },
-  playerHit: function(player, blockedLayer) {
+  playerOnGround: function(player, blockedLayer) {
     if(player.body.touching.right) {
       //can add other functionality here for extra obstacles later
     } else if (player.body.touching.down && this.isJumping == true) {
@@ -231,9 +210,10 @@ InfiniteScroller.Game.prototype = {
       this.isJumping == false;
     }
   },
-  //the player has just been bitten by a flea
-  playerBit: function(player, flea) {
-    //remove the flea that bit our player so it is no longer in the way
+  // the player has just collided with a zombie
+  playerHitZombie: function(player, zombie) {
+    
+    //remove the zombie that bit our player so it is no longer in the way
     //flea.destroy();
     
     Animations.ninjaAttack();
@@ -255,36 +235,8 @@ InfiniteScroller.Game.prototype = {
     this.player.body.velocity.x = 0;
     this.game.time.events.add(Phaser.Timer.SECOND * 2, this.playerScratch, this);
   },
-  //the player is collecting a toy from a mound
-  collect: function(player, mound) {
-    //this is called continuously while player is on mound, but we only want to do it once
-    if (!this.stopped) {
-      //change image and update the body size for the physics engine
-      this.player.loadTexture('playerDig');
-      this.player.animations.play('dig', 10, true);
-      this.player.body.setSize(this.player.digDimensions.width, this.player.digDimensions.height);
-    
-      //we can't remove the toy mound until digging is finished, so we have to set a variable for
-      //the function called from the timer (below)
-      this.currentMound = mound;
-    
-      //we stop a couple of seconds for the dig animation to play
-      this.stopped = true;
-      this.player.body.velocity.x = 0;
-      this.game.time.events.add(Phaser.Timer.SECOND * 2, this.playerDig, this);
-    }
-  },
   gameOver: function() {
     this.game.state.start('Game');
-  },
-  //checks to see that the player is swiping down or pressing a down arrow while on a toy mound
-  checkDig: function() {
-    if (this.cursors.down.isDown || (this.swipe.isDown && (this.swipe.position.y > this.swipe.positionDown.y))) {
-      return true;
-    }
-    else {
-      return false;
-    }
   },
   playerJump: function() {
     //when the ground is a sprite, we need to test for "touching" instead of "blocked"
@@ -313,33 +265,6 @@ InfiniteScroller.Game.prototype = {
 
     this.isAttacking = false;
   },
-  playerDig: function() {
-    //play audio
-    this.barkSound.play();
-
-    //grab the location before we destroy the toy mound so we can place the toy
-    var x = this.currentMound.x;
-  
-    //remove toy the mound sprite now that the toy is collected
-    this.currentMound.destroy();
-    
-    //refresh our points stats
-    this.points += 5;
-    this.refreshStats();
-    
-    //randomly pull a toy from the array
-    this.currentToy = this.toys[ Math.floor( Math.random() * this.toys.length ) ];
-    
-    //make the toy visible where the mound used to be
-    this.currentToy.visible = true;
-    this.currentToy.x = x;
-    
-    //and make it disappear again after one second
-    this.game.time.events.add(Phaser.Timer.SECOND, this.currentToyInvisible, this);
-    
-    //Animations.run(this.player);
-    this.stopped = false;
-  },
   currentToyInvisible: function() {
     this.currentToy.visible = false;
   },
@@ -352,8 +277,7 @@ InfiniteScroller.Game.prototype = {
       this.player.alive = false;
       
       //destroy everything before player runs away so there's nothing in the way
-      this.fleas.destroy();
-      this.mounds.destroy();
+      this.zombies.destroy();
 
       //We switch back to the standing version of the player
       
@@ -372,49 +296,30 @@ InfiniteScroller.Game.prototype = {
       Animations.ninjaRun();
     }
   },
-  generateMounds: function() {
-    this.mounds = this.game.add.group();
-
-    //enable physics in them
-    this.mounds.enableBody = true;
-
-    //phaser's random number generator
-    var numMounds = this.game.rnd.integerInRange(0, 5)
-    var mound;
-
-    for (var i = 0; i < numMounds; i++) {
-      //add sprite within an area excluding the beginning and ending
-      //  of the game world so items won't suddenly appear or disappear when wrapping
-      var x = this.game.rnd.integerInRange(this.game.width, this.game.world.width - this.game.width);
-      mound = this.mounds.create(x, this.game.height-75, 'mound');
-      mound.body.velocity.x = 0;
-    }
-
-  },
-  generateFleas: function() {
-    this.fleas = this.game.add.group();
+  generateZombies: function() {
+    this.zombies = this.game.add.group();
     
     //enable physics in them
-    this.fleas.enableBody = true;
+    this.zombies.enableBody = true;
 
     //phaser's random number generator
-    var numFleas = this.game.rnd.integerInRange(1, 5)
-    var flea;
+    var numZombies = this.game.rnd.integerInRange(1, 5)
+    var zombie;
 
-    for (var i = 0; i < numFleas; i++) {
+    for (var i = 0; i < numZombies; i++) {
       //add sprite within an area excluding the beginning and ending
       //  of the game world so items won't suddenly appear or disappear when wrapping
       var x = this.game.rnd.integerInRange(this.game.width, this.game.world.width - this.game.width);
-      flea = this.fleas.create(x, this.game.height - 227, 'zombie_walk');
+      zombie = this.zombies.create(x, this.game.height - 227, 'zombie_walk');
 
-      flea.animations.add('walk');
-      flea.play('walk', 10, true);
+      zombie.animations.add('walk');
+      zombie.play('walk', 10, true);
 
       //physics properties
-      flea.body.velocity.x = this.game.rnd.integerInRange(-20, 0);
+      zombie.body.velocity.x = this.game.rnd.integerInRange(-20, 0);
       
-      flea.body.immovable = false;
-      flea.body.collideWorldBounds = false;
+      zombie.body.immovable = false;
+      zombie.body.collideWorldBounds = false;
     }
   },
   render: function()
