@@ -3,6 +3,10 @@ var RulesEngine = RulesEngine || null;
 if (RulesEngine === null) {
 
 	RulesEngine = function() {
+    this.game = {
+      background: null,
+    };
+
     this.zombie = new function() {
       this.whenHitRunAway = false;
       this.whenHitDie = false;

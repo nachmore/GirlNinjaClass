@@ -44,7 +44,51 @@ RulesEditor.prototype = {
 
     this.validTriggers = {
       Game: {
-        Load: 0,
+        Load: {
+          Background: {
+            "Draw Graveyard": {
+              apply: function() {
+                RulesEngine.game.background = "background_graveyard";
+              },
+              undo: function() {
+                RulesEngine.game.background = null;
+              }
+            },
+            "Draw Pink Moon": {
+              apply: function() {
+                RulesEngine.game.background = "background_graveyard_magenta";
+              },
+              undo: function() {
+                RulesEngine.game.background = null;
+              }            
+            },
+            "Draw Party": {
+              apply: function() {
+                RulesEngine.game.background = "background_party";
+              },
+              undo: function() {
+                RulesEngine.game.background = null;
+              }            
+            },
+            "Draw Red": {
+              apply: function() {
+                RulesEngine.game.background = "background_red";
+              },
+              undo: function() {
+                RulesEngine.game.background = null;
+              }            
+
+            },
+            "Draw Placeholder": {
+              apply: function() {
+                RulesEngine.game.background = "background_placeholder";
+              },
+              undo: function() {
+                RulesEngine.game.background = null;
+              }            
+            }
+          }
+        },
         Bloat: 0,
       },
       "Human Player": {

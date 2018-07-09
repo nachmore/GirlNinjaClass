@@ -10,7 +10,7 @@ InfiniteScroller.Game.prototype = {
 
     //set up background
     this.game.world.setBounds(0, 0, 3500, this.game.height);
-    this.bg= this.add.tileSprite(0, 0, this.game.world.width, this.game.cache.getImage('background').height, 'background');
+    this.bg= this.add.tileSprite(0, 0, this.game.world.width, this.game.cache.getImage('background_graveyard').height, 'non_existant');
     this.bg.fixedToCamera = true;
     this.bg.tileScale.x = 0.4;
     this.bg.tileScale.y = 0.4;
@@ -148,6 +148,7 @@ InfiniteScroller.Game.prototype = {
         this.wrapping = false;
       }
 
+      this.updateBackground();
       this.handleCursorKeys();
       
       //The game world is infinite in the x-direction, so we wrap around.
@@ -156,6 +157,12 @@ InfiniteScroller.Game.prototype = {
       this.game.world.wrap(this.player, -(this.game.width/2), false, true, false);
     }
 
+  },
+  updateBackground: function() {
+    if (RulesEngine.game.background != null && this.bg.key != RulesEngine.game.background) {
+      this.bg.loadTexture(RulesEngine.game.background, 0, false);
+      this.bg.refreshTexture = true;
+    }
   },
   handleCursorKeys: function() {
           

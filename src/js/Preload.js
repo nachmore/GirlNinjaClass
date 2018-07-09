@@ -19,7 +19,11 @@ InfiniteScroller.Preload.prototype = {
 
     this.load.spritesheet('zombie_walk', 'assets/images/zombie_walk.png', 145, 160, 10);
 
-    this.load.image('background', 'assets/images/background.png');
+    this.load.image('background_graveyard', 'assets/images/background.png');
+    this.load.image('background_graveyard_magenta', 'assets/images/background_magenta.png');
+    this.load.image('background_red', 'assets/images/background_red.jpg');
+    this.load.image('background_party', 'assets/images/background_party.jpg');
+    this.load.image('background_placeholder', 'assets/images/background_placeholder.png');
 
     this.load.image('ground', 'assets/images/ground.png');
     
