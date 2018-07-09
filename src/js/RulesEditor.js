@@ -169,7 +169,7 @@ RulesEditor.prototype = {
     this.rules[index].apply();
 
     var text = '<div id="rule' + index + '" class="rule">' + 
-                '<button class="rule_button" onclick="javascript:RulesEditor.deleteRule(' + index + ')">🗑</button>' +
+                '<button class="delete_rule_btn" onclick="javascript:RulesEditor.deleteRule(' + index + ')">💩</button>' +
                 'When <span class="variable">'+ this.curActor + '</span></b> ' + 
                 '<span class="variable">' + this.curSituation + '</span>' + 
                  '<div class="rule_action">' + 

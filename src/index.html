@@ -6,7 +6,7 @@
 	<title>Girl Ninja</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<link href="https://fonts.googleapis.com/css?family=Chela+One|Montserrat" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Raleway|Montserrat" rel="stylesheet">
 
 	<link rel="stylesheet" type="text/css" href="styles/main.css">
 
@@ -33,32 +33,36 @@
 
 	<div style="position:absolute;height:100%;width:300px;padding-left: 5px;background:white;">
 
-		<div>Welcome!</div>
+		<h3>Welcome!</h3>
+		<div class="intro">
+			Can you help our poor 👩‍💻 dev complete their game? They've worked hard to build all of the components and actions but 
+			haven't been able to put everything together...
+		</div>
 
-		<div id="existing_rules" style="height:300px;width:290px;border:black 1px solid;overflow:scroll;"></div>
+		<div id="existing_rules"></div>
 
-		<button onclick="javascript:RulesEditor.addRule()">Add Rule</button>
+		<div id="new_rule" class="code">
 
-		<div id="rule" class="code">
-
-
-				When
-				<div>
-					<select id="actor"></select>
-				</div>
-				<div>
-					<select id="situation"></select>
-				</div>
-			
+			When
+			<div>
+				<select id="actor"></select>
+			</div>
+			<div>
+				<select id="situation"></select>
+			</div>
 
 			then
 			<div>
 				<select id="target"></select>
-		  </div>
+			</div>
 			should
 			<div>
-			  <select id="action"></select>
-		  </div>
+				<select id="action"></select>
+			</div>
+		</div>
+
+		<div style="width:100%">
+			<button id="btn_add" onclick="javascript:RulesEditor.addRule()">👌 Add Rule</button>
 		</div>
 
 	</div>

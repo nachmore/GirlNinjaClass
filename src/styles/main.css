@@ -1,14 +1,43 @@
-{
-  font-family: 'Chela One', cursive;
+h3, .intro{
+  font-family: 'Raleway', sans-serif;
+}
+
+h3 {
+  margin-bottom: 5px;
+  font-size: 1.4em;
+}
+
+.intro {
+  font-size: 1.2em;
 }
 
 .code, .code *, .variable, .rule {
   font-family: 'Montserrat', 'Consolas', sans-serif;
 }
 
-#rule select {
+#new_rule {
+  margin-top: 5px;
+}
+
+#new_rule select {
   margin: 5px 0px 5px 20px;
   width: 250px;
+}
+
+#btn_add {
+  font-size: 1.1em;
+  margin-top: 10px;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#existing_rules {
+  height: 250px;
+  width: 290px;
+  border: black 1px solid;
+  overflow: scroll;
+  margin-top: 10px;
 }
 
 .rule {
@@ -30,7 +59,7 @@
   padding-top: 3px;
 }
 
-.rule_button {
+.delete_rule_btn {
   float: left;
   vertical-align: middle;
   margin: 2px 5px 2px 2px;
