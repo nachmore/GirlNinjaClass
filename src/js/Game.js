@@ -202,29 +202,28 @@ InfiniteScroller.Game.prototype = {
   },
   // the player has just collided with a zombie
   playerHitZombie: function(player, zombie) {
-    
-    //remove the zombie that bit our player so it is no longer in the way
-    
-    //Animations.ninjaAttack();
+      
+    if (!this.isAttacking) {
+      this.playerHit();
+
+      if (!this.player.alive) 
+        return;
+    }
 
     // zombie dies, and no longer becomes a blocker
-    if (RulesEngine.zombie.whenHitDie) {
+    if (RulesEngine.zombie.whenHitDie || (this.isAttacking && RulesEngine.zombie.whenAttackedDie)) {
       zombie.enableBody = false;
 
-      if (!RulesEngine.zombie.playDeathAnimation)
+      if (RulesEngine.zombie.playDeathAnimation) {
+        zombie.animations.add('die');
+        zombie.loadTexture('zombie_die');
+        zombie.play('die', 24, false);
+        zombie.y += 1; // death animation needs to be a bit closer to the ground
+      } else {
         zombie.destroy();
+      }
     }
 
-    if (RulesEngine.zombie.playDeathAnimation) {
-      zombie.animations.add('die');
-      zombie.loadTexture('zombie_die');
-      zombie.play('die', 24, false);
-      zombie.y += 1; // death animation needs to be a bit closer to the ground
-    }
-
-    // register a hit
-    this.hits += RulesEngine.player.healthLostPerHit;
-        
     //play audio
     this.whineSound.play();
     
@@ -232,10 +231,38 @@ InfiniteScroller.Game.prototype = {
 
     this.stopped = true;
     this.player.body.velocity.x = 0;
-    this.game.time.events.add(Phaser.Timer.SECOND, this.playerRun, this);
+    this.game.time.events.add(250, this.playerRun, this);
   },
   gameOver: function() {
     this.game.state.start('Game');
+  },
+  playerHit: function() {
+
+    // register a hit
+    this.hits += RulesEngine.player.healthLostPerHit;
+
+    if (RulesEngine.player.retreatOnDeath && this.hits >= RulesEngine.player.maxHealth) {
+      
+      //set to dead (even though our player isn't actually dead in this game, just retreating)
+      //doesn't affect rendering
+      this.player.alive = false;
+      
+      this.zombies.destroy();
+
+      //We switch back to the standing version of the player
+      Animations.ninjaRun();
+      
+      //...then run home
+      this.player.anchor.setTo(.5, 1);
+      this.player.scale.x = -1;
+      this.player.body.velocity.x = -500;
+
+      //we want the player to run off the screen in this case
+      this.game.camera.unfollow();
+
+      //go to gameover after a few miliseconds
+      this.game.time.events.add(1500, this.gameOver, this);
+    }
   },
   playerRun: function() {
     this.stopped = false;

@@ -152,7 +152,6 @@ RulesEditor.prototype = {
             }
           }
         },
-        Bloat: 0,
       },
       "Human Player": {
         "Presses Up": {
@@ -229,6 +228,16 @@ RulesEditor.prototype = {
           },
         },
         Attacks: {
+          Zombie: {
+            "Should Die": {
+              apply: function() {
+                RulesEngine.zombie.whenAttackedDie = true;
+              },
+              undo: function() {
+                RulesEngine.zombie.whenAttackedDie = false;
+              }
+            }
+          },
           Animations: {
             "Play Attack Animation": {
               apply: function() {
@@ -282,20 +291,72 @@ RulesEditor.prototype = {
                 RulesEngine.player.healthLostPerHit = 0;
               }
             },
-          }
-        },
-        "Hits an Object": 0,
-      },
-      "Zombie": {
-        "Attacks": 0,
-        "Gets Hit By Player": {
-          Zombie: {
-            "Should Die": {
+          },
+          "Health is 0 or below": {
+            "Retreat!": {
               apply: function() {
-                RulesEngine.zombie.whenHitDie = true;
+                RulesEngine.player.retreatOnDeath = true;
               },
               undo: function() {
-                RulesEngine.zombie.whenHitDie = false;
+                RulesEngine.player.retreatOnDeath = false;
+              }
+            }
+          }
+        },
+      },
+      "Zombie": {
+        "Attacks Player": {
+          Player: {
+            "Loses 1 Health": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 1;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+            "Loses 2 Health": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 2;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+            "Loses 3 Health": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 3;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+            "Loses 4 Health": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 4;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+            "Loses 5 Health": {
+              apply: function() {
+                RulesEngine.player.healthLostPerHit = 5;
+              },
+              undo: function() {
+                RulesEngine.player.healthLostPerHit = 0;
+              }
+            },
+          }
+        },
+        "Dies": {
+          Zombie: {
+            "Should Disappear": {
+              apply: function() {
+                RulesEngine.zombie.disappearOnDeath = true;
+              },
+              undo: function() {
+                RulesEngine.zombie.disappearOnDeath = false;
               }
             },
             "Play Death Animation": {
@@ -304,6 +365,18 @@ RulesEditor.prototype = {
               },
               undo: function() {
                 RulesEngine.zombie.playDeathAnimation = false;
+              }
+            }
+          }
+        },
+        "Collides With Player": {
+          Zombie: {
+            "Should Die": {
+              apply: function() {
+                RulesEngine.zombie.whenHitDie = true;
+              },
+              undo: function() {
+                RulesEngine.zombie.whenHitDie = false;
               }
             }
           }

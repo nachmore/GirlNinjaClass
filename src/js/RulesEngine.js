@@ -11,14 +11,17 @@ if (RulesEngine === null) {
 
     this.zombie = new function() {
       this.whenHitRunAway = false;
-      this.whenHitDie = false;
+      this.whenHitDie = false; // TODO: collides
+      this.whenAttackedDie = false;
       this.playDeathAnimation = false;
+      this.disappearOnDeath = false;
     };
 
     this.player = new function() {
 
       this.maxHealth = 1;
       this.healthLostPerHit = 0;
+      this.retreatOnDeath = false;
 
       this.actions = Object.freeze({
         Run: 1,
