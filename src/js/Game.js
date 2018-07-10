@@ -210,6 +210,9 @@ InfiniteScroller.Game.prototype = {
         return;
     }
 
+    if (this.isAttacking)
+      this.points += RulesEngine.player.pointsPerKill;
+
     // zombie dies, and no longer becomes a blocker
     if (RulesEngine.zombie.whenHitDie || (this.isAttacking && RulesEngine.zombie.whenAttackedDie)) {
       zombie.enableBody = false;
@@ -219,7 +222,9 @@ InfiniteScroller.Game.prototype = {
         zombie.loadTexture('zombie_die');
         zombie.play('die', 24, false);
         zombie.y += 1; // death animation needs to be a bit closer to the ground
-      } else {
+      } 
+      
+      if (RulesEngine.zombie.disappearOnDeath) {
         zombie.destroy();
       }
     }

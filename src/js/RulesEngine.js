@@ -22,6 +22,7 @@ if (RulesEngine === null) {
       this.maxHealth = 1;
       this.healthLostPerHit = 0;
       this.retreatOnDeath = false;
+      this.pointsPerKill = 0;
 
       this.actions = Object.freeze({
         Run: 1,

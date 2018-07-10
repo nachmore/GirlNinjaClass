@@ -238,6 +238,48 @@ RulesEditor.prototype = {
               }
             }
           },
+          "Hits Zombie": {
+            "Get 1 Point": {
+              apply: function() {
+                RulesEngine.player.pointsPerKill = 1;
+              },
+              undo: function() {
+                RulesEngine.player.pointsPerKill = 0;
+              }
+            },
+            "Get 2 Point": {
+              apply: function() {
+                RulesEngine.player.pointsPerKill = 2;
+              },
+              undo: function() {
+                RulesEngine.player.pointsPerKill = 0;
+              }
+            },
+            "Get 3 Point": {
+              apply: function() {
+                RulesEngine.player.pointsPerKill = 3;
+              },
+              undo: function() {
+                RulesEngine.player.pointsPerKill = 0;
+              }
+            },
+            "Get 4 Point": {
+              apply: function() {
+                RulesEngine.player.pointsPerKill = 4;
+              },
+              undo: function() {
+                RulesEngine.player.pointsPerKill = 0;
+              }
+            },
+            "Get 5 Point": {
+              apply: function() {
+                RulesEngine.player.pointsPerKill = 5;
+              },
+              undo: function() {
+                RulesEngine.player.pointsPerKill = 0;
+              }
+            },
+          },
           Animations: {
             "Play Attack Animation": {
               apply: function() {
