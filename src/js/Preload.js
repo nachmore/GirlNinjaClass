@@ -18,6 +18,7 @@ InfiniteScroller.Preload.prototype = {
     this.load.spritesheet('ninja_attack', 'assets/images/ninja_attack.png', 118, 127, 10);
 
     this.load.spritesheet('zombie_walk', 'assets/images/zombie_walk.png', 145, 160, 10);
+    this.load.spritesheet('zombie_die', 'assets/images/zombie_die.png', 175, 160, 12);
 
     this.load.image('background_graveyard', 'assets/images/background.png');
     this.load.image('background_graveyard_magenta', 'assets/images/background_magenta.png');
@@ -28,11 +29,6 @@ InfiniteScroller.Preload.prototype = {
     this.load.image('ground', 'assets/images/ground.png');
     
 
-
-    this.load.spritesheet('playerScratch', 'assets/images/dog_scratch.png', 116, 100, 2);
-    this.load.spritesheet('playerDig', 'assets/images/dog_dig.png', 129, 100, 2);
-    
-    //this.load.image('grass', 'assets/images/grass.png');
     
     this.load.audio('whine', ['assets/audio/whine.ogg', 'assets/audio/whine.mp3']);
     this.load.audio('bark', ['assets/audio/bark.ogg', 'assets/audio/bark.mp3']);

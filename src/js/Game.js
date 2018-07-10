@@ -43,15 +43,6 @@ InfiniteScroller.Game.prototype = {
     //so player can walk on ground
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = false;
-
-    //properties when the player is digging, scratching and standing, so we can use in update()
-    var playerDigImg = this.game.cache.getImage('playerDig');
-    this.player.animations.add('dig');
-    this.player.digDimensions = {width: playerDigImg.width, height: playerDigImg.height};
-    
-    var playerScratchImg = this.game.cache.getImage('playerScratch');
-    this.player.animations.add('scratch');
-    this.player.scratchDimensions = {width: playerScratchImg.width, height: playerScratchImg.height};
     
     this.player.standDimensions = {width: this.player.width, height: this.player.height};
     this.player.anchor.setTo(0.5, 1);
@@ -110,7 +101,6 @@ InfiniteScroller.Game.prototype = {
     this.refreshStats();
 
     //only respond to keys and keep the speed if the player is alive
-    //we also don't want to do anything if the player is stopped for scratching or digging
     if(this.player.alive && !this.stopped) {
       
       this.player.body.velocity.x = 300;
@@ -214,29 +204,41 @@ InfiniteScroller.Game.prototype = {
   playerHitZombie: function(player, zombie) {
     
     //remove the zombie that bit our player so it is no longer in the way
-    //flea.destroy();
     
-    Animations.ninjaAttack();
+    //Animations.ninjaAttack();
+
+    // zombie dies, and no longer becomes a blocker
+    if (RulesEngine.zombie.whenHitDie) {
+      zombie.enableBody = false;
+
+      if (!RulesEngine.zombie.playDeathAnimation)
+        zombie.destroy();
+    }
+
+    if (RulesEngine.zombie.playDeathAnimation) {
+      zombie.animations.add('die');
+      zombie.loadTexture('zombie_die');
+      zombie.play('die', 24, false);
+      zombie.y += 1; // death animation needs to be a bit closer to the ground
+    }
 
     // register a hit
     this.hits += RulesEngine.player.healthLostPerHit;
-    
-    //change sprite image
-    //this.player.loadTexture('playerScratch');
-    //this.player.animations.play('scratch', 10, true);
-    
+        
     //play audio
     this.whineSound.play();
     
     this.player.body.x += 10;
 
-    //wait a couple of seconds for the scratch animation to play before continuing
     this.stopped = true;
     this.player.body.velocity.x = 0;
-    this.game.time.events.add(Phaser.Timer.SECOND * 2, this.playerScratch, this);
+    this.game.time.events.add(Phaser.Timer.SECOND, this.playerRun, this);
   },
   gameOver: function() {
     this.game.state.start('Game');
+  },
+  playerRun: function() {
+    this.stopped = false;
   },
   playerJump: function() {
     //when the ground is a sprite, we need to test for "touching" instead of "blocked"
@@ -265,37 +267,6 @@ InfiniteScroller.Game.prototype = {
 
     this.isAttacking = false;
   },
-  currentToyInvisible: function() {
-    this.currentToy.visible = false;
-  },
-  playerScratch: function() {
-    this.stopped = false;
-    
-    if (this.hits >= RulesEngine.player.maxHealth) {
-      //set to dead (even though our player isn't actually dead in this game, just running home)
-      //doesn't affect rendering
-      this.player.alive = false;
-      
-      //destroy everything before player runs away so there's nothing in the way
-      this.zombies.destroy();
-
-      //We switch back to the standing version of the player
-      
-      //...then run home
-      this.player.anchor.setTo(.5, 1);
-      this.player.scale.x = -1;
-      this.player.body.velocity.x = -1000;
-
-      //we want the player to run off the screen in this case
-      this.game.camera.unfollow();
-
-      //go to gameover after a few miliseconds
-      this.game.time.events.add(1500, this.gameOver, this);
-    } else {
-      //change image and update the body size for the physics engine
-      Animations.ninjaRun();
-    }
-  },
   generateZombies: function() {
     this.zombies = this.game.add.group();
     
@@ -318,7 +289,7 @@ InfiniteScroller.Game.prototype = {
       //physics properties
       zombie.body.velocity.x = this.game.rnd.integerInRange(-20, 0);
       
-      zombie.body.immovable = false;
+      zombie.body.immovable = true;
       zombie.body.collideWorldBounds = false;
     }
   },

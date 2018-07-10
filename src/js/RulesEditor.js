@@ -288,7 +288,26 @@ RulesEditor.prototype = {
       },
       "Zombie": {
         "Attacks": 0,
-        "Gets Hit By Player": 0
+        "Gets Hit By Player": {
+          Zombie: {
+            "Should Die": {
+              apply: function() {
+                RulesEngine.zombie.whenHitDie = true;
+              },
+              undo: function() {
+                RulesEngine.zombie.whenHitDie = false;
+              }
+            },
+            "Play Death Animation": {
+              apply: function() {
+                RulesEngine.zombie.playDeathAnimation = true;
+              },
+              undo: function() {
+                RulesEngine.zombie.playDeathAnimation = false;
+              }
+            }
+          }
+        }
       }
     };
   },

@@ -12,6 +12,7 @@ if (RulesEngine === null) {
     this.zombie = new function() {
       this.whenHitRunAway = false;
       this.whenHitDie = false;
+      this.playDeathAnimation = false;
     };
 
     this.player = new function() {
