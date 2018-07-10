@@ -134,7 +134,7 @@ RulesEditor.prototype = {
             },
           },
           UI: {
-            'Should Draw Health': {
+            'Draw Health': {
               apply: function() {
                 RulesEngine.game.drawHealth = true;
               },
@@ -142,7 +142,7 @@ RulesEditor.prototype = {
                 RulesEngine.game.drawHealth = false;
               }
             },
-            'Should Draw Points': {
+            'Draw Points': {
               apply: function() {
                 RulesEngine.game.drawPoints = true;
               },
@@ -184,7 +184,14 @@ RulesEditor.prototype = {
                 RulesEngine.player.triggers.down = null;
               }
             },
-            Attack: null,
+            Attack: {
+              apply: function () {
+                RulesEngine.player.triggers.up = RulesEngine.player.actions.Attack;
+              },
+              undo: function () {
+                RulesEngine.player.triggers.up = null;
+              }
+            },
           },
         },
         "Presses Left": {
@@ -197,7 +204,14 @@ RulesEditor.prototype = {
                 RulesEngine.player.triggers.left = null;
               }
             },
-            Attack: null,
+            Attack: {
+              apply: function () {
+                RulesEngine.player.triggers.up = RulesEngine.player.actions.Attack;
+              },
+              undo: function () {
+                RulesEngine.player.triggers.up = null;
+              }
+            },
           },
         },
         "Presses Right": {
@@ -210,7 +224,14 @@ RulesEditor.prototype = {
                 RulesEngine.player.triggers.right = null;
               }
             },
-            Attack: null,
+            Attack: {
+              apply: function () {
+                RulesEngine.player.triggers.up = RulesEngine.player.actions.Attack;
+              },
+              undo: function () {
+                RulesEngine.player.triggers.up = null;
+              }
+            },
           },
         },
       },
@@ -229,7 +250,7 @@ RulesEditor.prototype = {
         },
         Attacks: {
           Zombie: {
-            "Should Die": {
+            "Die": {
               apply: function() {
                 RulesEngine.zombie.whenAttackedDie = true;
               },
@@ -238,7 +259,7 @@ RulesEditor.prototype = {
               }
             }
           },
-          "Hits Zombie": {
+          "Hit Zombie": {
             "Get 1 Point": {
               apply: function() {
                 RulesEngine.player.pointsPerKill = 1;
@@ -393,7 +414,7 @@ RulesEditor.prototype = {
         },
         "Dies": {
           Zombie: {
-            "Should Disappear": {
+            "Disappear": {
               apply: function() {
                 RulesEngine.zombie.disappearOnDeath = true;
               },
@@ -413,7 +434,7 @@ RulesEditor.prototype = {
         },
         "Collides With Player": {
           Zombie: {
-            "Should Die": {
+            "Die": {
               apply: function() {
                 RulesEngine.zombie.whenHitDie = true;
               },
